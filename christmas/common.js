@@ -187,4 +187,5 @@ function mapMuszak(muszakValue){
     else if (muszakValue == "3") {
         return "Éjszakai";
     }
+    return muszakValue;
 }
