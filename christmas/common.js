@@ -5,7 +5,24 @@
 /**
  *  Lekérjük a tableselectort, és regisztrálunk egy change eseménykezelőt!
  */
+const divSelector = document.getElementById("tableselector");
+divSelector.addEventListener('change', function(e){
+    const target = e.target;
 
+    const htmlsec = document.getElementById("htmlsection");
+    const jssec = document.getElementById("jssection");
+
+    if (target.checked) {
+        if (target.value == "htmlsection") {
+            htmlsec.classList.remove("hide");
+            jssec.classList.add("hide");
+        } 
+        else {
+            htmlsec.classList.add("hide");
+            jssec.classList.remove("hide");
+        }
+    }
+})
 
 
 /**
@@ -19,7 +36,15 @@
  * @returns {void}
  */
 function initCheckbox(checkboxElem){
+    changeCheckboxValue(checkboxElem);
 
+    checkboxElem.addEventListener('change', function(e){
+        /**
+         * @type {HTMLInputElement}
+         */
+        const checkbox = e.target;
+        changeCheckboxValue(checkbox);
+    })
 }
 
 /**
@@ -35,7 +60,16 @@ function initCheckbox(checkboxElem){
  * @returns {void}
  */
 function changeCheckboxValue(checkbox){
-
+    const mano2 = checkbox.parentElement.parentElement.querySelector("#mano2");
+    const muszak2 = checkbox.parentElement.parentElement.querySelector("#muszak2");
+    if (checkbox.checked == true) {
+        mano2.disabled = false;
+        muszak2.disabled = false;
+    }
+    else {
+        mano2.disabled = true;
+        muszak2.disabled = true;
+    }
 }
 
 /**
@@ -69,6 +103,14 @@ function initSelect(arr) {
     const select = getSelectElement();
     select.innerHTML = '';
     createoption(select, "Válassz Manót!"); // ez a függvény még nincs implementálva, görgess lejjebb
+
+    for (const mano of arr) {
+        createoption(select, mano.who1, mano.who1);
+ 
+        if (mano.who2){
+            createoption(select, mano.who2, mano.who2);
+        }
+    }
 }
 
 /**
@@ -80,7 +122,10 @@ function initSelect(arr) {
  * @returns {void}
  */
 function createoption(selectElement, label, value = "") {
-
+    const option = document.createElement("option");
+    option.value = value;
+    option.innerText = label;
+    selectElement.appendChild(option);
 }
 
 /**
@@ -103,6 +148,11 @@ function createoption(selectElement, label, value = "") {
  * @returns {void}
  */
 function createNewElement(obj, form, array) {
+    const select = getSelectElement();
+    createoption(select, obj.who1, obj.who1);
+    if (obj.who2) {
+        createoption(select, obj.who2, obj.who2);
+    }
 
     // ez egy ismerős rész, ehhez nem kell nyúlni
     array.push(obj);
@@ -110,6 +160,8 @@ function createNewElement(obj, form, array) {
     form.reset();
     // ismerős rész vége
 
+    const checkbox = form.querySelector('#masodikmano');
+    changeCheckboxValue(checkbox);
 }
 
 /**
@@ -126,6 +178,13 @@ function createNewElement(obj, form, array) {
  * @returns {string}
  */
 function mapMuszak(muszakValue){
-    console.log(muszakValue);
-    return muszakValue;
+    if (muszakValue == "1") {
+        return "Délelöttös";
+    }
+    else if  (muszakValue == "2") {
+        return "Délutános";
+    }
+    else if (muszakValue == "3") {
+        return "Éjszakai";
+    }
 }
